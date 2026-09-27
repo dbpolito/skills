@@ -42,7 +42,7 @@ npx opencode-ci run --auto 'Use @review-pr to review and publish findings for th
 
 Allow GitHub Actions to approve pull requests in the repository's Actions settings, or supply a GitHub App token and its bot login. The skill approves complete five-star reviews and uses `COMMENT` for findings or incomplete coverage. It does not request changes or merge. Each review is checked against current base/head SHAs immediately before publication.
 
-The agent reports the review URL or publication problem in the job log. The job status follows `opencode-ci`'s exit status.
+If publication fails, the agent logs the reason and posts a **Review automation failure** PR comment linking the CI run. Retries reuse the same run/revision comment; superseded runs only log the skip. If GitHub cannot accept the comment, the agent reports that in the log too. The job status follows `opencode-ci`'s exit status.
 
 Pin the skills source to a commit or release for reproducible CI. For account-auth setup, see [opencode-ci](https://github.com/dbpolito/opencode-ci).
 
