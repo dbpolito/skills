@@ -1,14 +1,15 @@
 ---
-name: Get PR Ready
-description: Get an existing PR ready by fixing CI failures and addressing review feedback until checks pass and review is approved. Use when asked to get a PR ready.
+name: get-pr-ready
+description: Fix CI failures and address review feedback on an existing PR. Use when asked to get a PR ready for merge.
 ---
 
 # Get PR ready
 
-Use the given PR, or the current branch's PR. Follow repository instructions and preserve local work.
+Use the given PR or the current branch's PR. Follow repository instructions and preserve local work.
 
-1. Check CI and all current review feedback with `gh`. Wait for pending checks (`gh pr checks <number> --watch`); inspect failures.
-2. Verify feedback against the code. Fix valid issues, test, commit, and push; politely explain disagreements or ask for clarification. Honor any required approval before guarded operations.
-3. After each push, recheck CI and feedback on the latest head. Finish only when required checks pass, review is approved, and no actionable feedback remains.
+1. Confirm the PR's head branch. Use `gh` to inspect failed checks, reviews, and inline review threads.
+2. Verify feedback against the code. Fix CI failures and valid review issues, run relevant tests, commit only your changes, and push. Explain disagreements or ask for clarification.
+3. Recheck the latest head after each push. Address available issues before waiting for required checks (`gh pr checks <number> --required --watch --fail-fast`).
+4. Repeat until required checks pass, required reviews are approved, and no actionable feedback remains.
 
-If blocked by a failing check, pending review, or needed human decision, report the current state and blocker. Never self-approve, dismiss reviews, or merge to force completion.
+If progress requires human input or an external fix, report the current state and blocker. Never self-approve, dismiss reviews, or merge.
