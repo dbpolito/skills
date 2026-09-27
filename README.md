@@ -18,33 +18,141 @@ It keeps a pinned checkout unchanged and reads test code without running tests. 
 
 ```sh
 npx skills add dbpolito/skills --skill review-pr -g -a opencode
-npx opencode-ci run --auto 'Use @review-pr to review PR #123 in owner/repo'
+npx opencode-ci@latest run --auto 'Use @review-pr to review PR #123 in owner/repo'
 ```
 
 Requires `git`, authenticated `gh`, `jq`, the PR head checked out, and enough Git history to find its merge base. The publishing account needs permission to submit PR reviews.
 
 ### Run in CI
 
-Copy [`examples/review-pr.yml`](examples/review-pr.yml) into the target repository's `.github/workflows/`. Set `OPENCODE_MODEL` to your provider/model ID and `OPENAI_API_KEY` to your provider credential; change the credential variable for a different provider. `OPENCODE_VARIANT` is optional. The example uses an API key and runs on non-draft, same-repository PRs.
+Copy these examples into `.github/workflows/`. Both OAuth and API-key authentication are supported. Adjust the commented sections, model, and secrets to your setup. See [opencode-ci](https://github.com/dbpolito/opencode-ci) for credential setup.
 
-The invocation is:
+#### PR review
 
-```sh
-npx opencode-ci run --auto 'Use @review-pr to review and publish findings for the PR supplied in the environment.'
+[View file](examples/opencode-review-pr.yml) · [Raw / download](https://raw.githubusercontent.com/dbpolito/skills/main/examples/opencode-review-pr.yml)
+
+```yaml
+name: opencode-review-pr
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    if: github.event.pull_request.draft == false && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    concurrency:
+      group: opencode-review-pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      REVIEW_LOGIN: github-actions[bot]
+      REVIEW_MODEL: ${{ vars.OPENCODE_MODEL }}
+      REVIEW_AGENT: build
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install review skill
+        run: npx --yes skills add dbpolito/skills --skill review-pr -g -a opencode -y
+
+      # Auth: keep this step and the save step below.
+      # API key: remove both auth steps.
+      - name: Load auth credentials
+        id: auth
+        env:
+          OPENCODE_CI_AUTH_JSON: ${{ secrets.OPENCODE_CI_AUTH_JSON }}
+        run: printf '%s' "$OPENCODE_CI_AUTH_JSON" > "$HOME/opencode-ci.auth.json"
+
+      - name: Review
+        # API key: uncomment these lines (or use your provider's variable).
+        # env:
+        #   OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          npx --yes opencode-ci@latest run --auto --thinking \
+            --agent "$REVIEW_AGENT" --model "$REVIEW_MODEL" --timeout 2700 \
+            --title "review-pr $GITHUB_RUN_ID/$GITHUB_RUN_ATTEMPT" \
+            'Use @review-pr to review and publish findings for the PR supplied in the environment.'
+
+      # Auth only: persist refreshed credentials even after a failed review.
+      - name: Save refreshed auth credentials
+        if: always() && steps.auth.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+          OPENCODE_CI_AUTH_JSON: ${{ secrets.OPENCODE_CI_AUTH_JSON }}
+        run: |
+          if ! cmp -s "$HOME/opencode-ci.auth.json" <(printf '%s' "$OPENCODE_CI_AUTH_JSON"); then
+            gh secret set OPENCODE_CI_AUTH_JSON --repo "$GITHUB_REPOSITORY" < "$HOME/opencode-ci.auth.json"
+          fi
 ```
 
-| Input | Purpose |
-| --- | --- |
-| `GITHUB_REPOSITORY`, `PR_NUMBER` | Target PR; otherwise resolved from the invocation or GitHub event. |
-| `BASE_SHA`, `HEAD_SHA` | Immutable review revisions; otherwise resolved from the event or PR metadata. |
-| `REVIEW_LOGIN` | Publishing login, including `[bot]` for a GitHub App; user tokens can use `gh api user`. |
-| `REVIEW_MODEL`, `REVIEW_VARIANT`, `REVIEW_VERSION`, `REVIEW_AGENT` | Optional execution metadata for the review summary. |
+#### Auth keepalive
 
-Allow GitHub Actions to approve pull requests in the repository's Actions settings, or supply a GitHub App token and its bot login. The skill approves complete five-star reviews and uses `COMMENT` for findings or incomplete coverage. It does not request changes or merge. Each review is checked against current base/head SHAs immediately before publication.
+[View file](examples/opencode-auth.yml) · [Raw / download](https://raw.githubusercontent.com/dbpolito/skills/main/examples/opencode-auth.yml)
 
-If publication fails, the agent logs the reason and posts a **Review automation failure** PR comment linking the CI run. Retries reuse the same run/revision comment; superseded runs only log the skip. If GitHub cannot accept the comment, the agent reports that in the log too. The job status follows `opencode-ci`'s exit status.
+```yaml
+name: opencode-auth
 
-Pin the skills source to a commit or release for reproducible CI. For account-auth setup, see [opencode-ci](https://github.com/dbpolito/opencode-ci).
+on:
+  schedule:
+    - cron: '0 9 * * *' # Daily at 09:00 UTC.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: opencode-auth
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Load auth credentials
+        id: auth
+        env:
+          OPENCODE_CI_AUTH_JSON: ${{ secrets.OPENCODE_CI_AUTH_JSON }}
+        run: printf '%s' "$OPENCODE_CI_AUTH_JSON" > "$HOME/opencode-ci.auth.json"
+
+      - name: Refresh auth
+        env:
+          OPENCODE_MODEL: ${{ vars.OPENCODE_MODEL }}
+        run: |
+          npx --yes opencode-ci@latest run --model "$OPENCODE_MODEL" --timeout 120 \
+            'Reply only OK. Do not use tools.'
+
+      - name: Save refreshed auth credentials
+        if: always() && steps.auth.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+          OPENCODE_CI_AUTH_JSON: ${{ secrets.OPENCODE_CI_AUTH_JSON }}
+        run: |
+          if ! cmp -s "$HOME/opencode-ci.auth.json" <(printf '%s' "$OPENCODE_CI_AUTH_JSON"); then
+            gh secret set OPENCODE_CI_AUTH_JSON --repo "$GITHUB_REPOSITORY" < "$HOME/opencode-ci.auth.json"
+          fi
+```
 
 Source: [`skills/review-pr/SKILL.md`](skills/review-pr/SKILL.md).
 
