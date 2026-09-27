@@ -23,6 +23,8 @@ Use the supplied repository and PR, or resolve them from `GITHUB_REPOSITORY`, `P
 
 Pin full base/head SHAs from `BASE_SHA` / `HEAD_SHA`, the event, or GitHub metadata. Confirm both commits and their merge base exist and checkout `HEAD` matches the PR head. Report missing history or a mismatched checkout.
 
+If checkout `HEAD` differs, stop before investigation and report both SHAs. For GitHub Actions' synthetic merge checkout, recommend `ref: ${{ github.event.pull_request.head.sha }}` on `actions/checkout`; do not switch revisions yourself. Use the failure procedure below when the pinned PR is still current.
+
 Fetch only PR metadata initially: title, body, author, URL, state, draft status, and base/head SHAs. Stop and explain if the PR is closed, draft, or differs from the pinned revisions. Reuse these values and any supplied review focus throughout the run.
 
 ## 2. Investigate independently

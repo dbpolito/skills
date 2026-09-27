@@ -27,6 +27,14 @@ Requires `git`, authenticated `gh`, `jq`, the PR head checked out, and enough Gi
 
 Copy these examples into `.github/workflows/`. Both OAuth and API-key authentication are supported. Adjust the commented sections, model, and secrets to your setup. See [opencode-ci](https://github.com/dbpolito/opencode-ci) for credential setup.
 
+Reviews run for non-draft, same-repository PRs. The example includes an optional owner/member restriction as a comment. New commits cancel the previous review for that PR. Keep the checkout's explicit `ref`: GitHub otherwise checks out a synthetic merge commit, which fails the skill's pinned-head check.
+
+Set repository variable `OPENCODE_MODEL` and, for OAuth, repository secrets `OPENCODE_CI_AUTH_JSON` and `PAT_TOKEN`. The PAT needs **Secrets: Read and write** for this repository. Enable **Allow GitHub Actions to create and approve pull requests** in repository Actions settings if the bot should approve clean reviews.
+
+The review and keepalive workflows can overlap, and queued workflows retain their original repository secrets. Concurrent OAuth refreshes can invalidate or overwrite saved tokens; authentication failures may require reseeding the auth secret.
+
+A green workflow means the agent process completed, not necessarily that it published a review. Check its formal review or **Review automation failure** comment for the outcome.
+
 #### PR review
 
 [View file](examples/opencode-review-pr.yml) · [Raw / download](https://raw.githubusercontent.com/dbpolito/skills/main/examples/opencode-review-pr.yml)
@@ -44,12 +52,13 @@ permissions:
 
 jobs:
   review:
+    # To restrict authors, append: && contains(fromJSON('["OWNER", "MEMBER"]'), github.event.pull_request.author_association)
     if: github.event.pull_request.draft == false && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 55
     concurrency:
       group: opencode-review-pr-${{ github.event.pull_request.number }}
-      cancel-in-progress: false
+      cancel-in-progress: true
     env:
       GH_TOKEN: ${{ github.token }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -61,6 +70,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # The skill reviews the PR head, not GitHub's synthetic merge commit.
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
           persist-credentials: false

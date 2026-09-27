@@ -10,12 +10,13 @@ permissions:
 
 jobs:
   review:
+    # To restrict authors, append: && contains(fromJSON('["OWNER", "MEMBER"]'), github.event.pull_request.author_association)
     if: github.event.pull_request.draft == false && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 55
     concurrency:
       group: opencode-review-pr-${{ github.event.pull_request.number }}
-      cancel-in-progress: false
+      cancel-in-progress: true
     env:
       GH_TOKEN: ${{ github.token }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -27,6 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # The skill reviews the PR head, not GitHub's synthetic merge commit.
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
           persist-credentials: false
