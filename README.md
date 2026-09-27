@@ -18,7 +18,7 @@ It keeps a pinned checkout unchanged and reads test code without running tests. 
 
 ```sh
 npx skills add dbpolito/skills --skill review-pr -g -a opencode
-npx opencode-ci@latest run --auto 'Use @review-pr to review PR #123 in owner/repo'
+npx opencode-ci@latest run --auto --skill review-pr 'Review and publish findings for PR #123 in owner/repo'
 ```
 
 Requires `git`, authenticated `gh`, `jq`, the PR head checked out, and enough Git history to find its merge base. The publishing account needs permission to submit PR reviews.
@@ -88,7 +88,8 @@ jobs:
           npx --yes opencode-ci@latest run --auto --thinking \
             --agent "$REVIEW_AGENT" --model "$REVIEW_MODEL" --timeout 2700 \
             --title "review-pr $GITHUB_RUN_ID/$GITHUB_RUN_ATTEMPT" \
-            'Use @review-pr to review and publish findings for the PR supplied in the environment.'
+            --skill review-pr \
+            'Review and publish findings for the PR supplied in the environment.'
 
       # Auth only: persist refreshed credentials even after a failed review.
       - name: Save refreshed auth credentials

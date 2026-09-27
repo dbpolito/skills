@@ -54,7 +54,8 @@ jobs:
           npx --yes opencode-ci@latest run --auto --thinking \
             --agent "$REVIEW_AGENT" --model "$REVIEW_MODEL" --timeout 2700 \
             --title "review-pr $GITHUB_RUN_ID/$GITHUB_RUN_ATTEMPT" \
-            'Use @review-pr to review and publish findings for the PR supplied in the environment.'
+            --skill review-pr \
+            'Review and publish findings for the PR supplied in the environment.'
 
       # Auth only: persist refreshed credentials even after a failed review.
       - name: Save refreshed auth credentials
