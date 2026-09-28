@@ -1,5 +1,5 @@
 ---
-name: Rift
+name: rift
 description: Create and switch to an isolated Rift-backed worktree. Use when asked to work in a new worktree, Rift workspace, or isolated checkout.
 ---
 

@@ -1,12 +1,19 @@
 # Skills
 
-Small, focused skills for coding agents. Install them with the [skills CLI](https://skills.sh/).
+Small, focused skills for coding agents. Install them with the [skills CLI](https://skills.sh/):
+
+```sh
+npx skills add dbpolito/skills
+```
+
+Skill directory and manifest names follow the skill manifest convention: lowercase letters, numbers, and hyphens (for example, `get-pr-ready`), with the directory matching the manifest's `name`.
 
 | Skill | Purpose |
 | --- | --- |
 | [Review PR](#review-pr) | Investigate a PR and publish evidence-backed review findings. |
 | [Get PR Ready](#get-pr-ready) | Fix CI failures and work through review feedback. |
 | [Rift](#rift) | Create and enter an isolated Rift-backed worktree. |
+| [rmslop](#rmslop) | Remove AI-generated code slop from a branch diff. |
 
 ## Review PR
 
@@ -212,3 +219,17 @@ npx skills add dbpolito/skills --skill rift -g -a opencode
 Ask your agent to **“use a Rift workspace”** or **“work in a new worktree.”** OpenCode needs the Rift tools and session-management tool available.
 
 Source: [`skills/rift/SKILL.md`](skills/rift/SKILL.md).
+
+## rmslop
+
+Check the branch diff against `dev` and remove unnecessary comments, defensive checks, `any` casts, emoji, and other code that doesn't fit the surrounding style. Inspired by [OpenCode's `/rmslop` command](https://github.com/anomalyco/opencode/blob/dev/.opencode/command/rmslop.md).
+
+### Install
+
+```sh
+npx skills add dbpolito/skills --skill rmslop
+```
+
+Ask your agent to **“rmslop this branch”**. This skill expects a `dev` branch to compare against.
+
+Source: [`skills/rmslop/SKILL.md`](skills/rmslop/SKILL.md).
