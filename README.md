@@ -10,12 +10,12 @@ Skill directory and manifest names follow the skill manifest convention: lowerca
 
 | Skill | Purpose |
 | --- | --- |
-| [Review PR](#review-pr) | Investigate a PR and publish evidence-backed review findings. |
-| [Get PR Ready](#get-pr-ready) | Fix CI failures and work through review feedback. |
-| [Rift](#rift) | Create and enter an isolated Rift-backed worktree. |
+| [review-pr](#review-pr) | Investigate a PR and publish evidence-backed review findings. |
+| [get-pr-ready](#get-pr-ready) | Fix CI failures and work through review feedback. |
+| [rift](#rift) | Create and enter an isolated Rift-backed worktree. |
 | [rmslop](#rmslop) | Remove AI-generated code slop from a branch diff. |
 
-## Review PR
+## review-pr
 
 Review an existing pull request independently, then reconcile previous feedback and publish one formal GitHub review. It traces changed behavior through callers, state, and dependencies, checks potential defects against counterevidence, and reports concrete failures with concise inline comments.
 
@@ -174,7 +174,7 @@ jobs:
 
 Source: [`skills/review-pr/SKILL.md`](skills/review-pr/SKILL.md).
 
-## Get PR Ready
+## get-pr-ready
 
 Keep working on an existing pull request until its required CI checks pass, required reviews are approved, and no actionable feedback remains.
 
@@ -198,7 +198,7 @@ Ask your agent to **“get this PR ready”** and provide a PR number or URL. If
 
 Source: [`skills/get-pr-ready/SKILL.md`](skills/get-pr-ready/SKILL.md).
 
-## Rift
+## rift
 
 Create an isolated Rift-backed worktree, move the current OpenCode session into it, and continue the original task there. The skill avoids duplicate worktrees and does not silently substitute a manual Git worktree when Rift was requested.
 
