@@ -12,6 +12,7 @@ Skill directory and manifest names follow the skill manifest convention: lowerca
 | --- | --- |
 | [review-pr](#review-pr) | Investigate a PR and publish evidence-backed review findings. |
 | [get-pr-ready](#get-pr-ready) | Fix CI failures and work through review feedback. |
+| [create-pr](#create-pr) | Create a PR with a concise title and body from the final branch changes. |
 | [rift](#rift) | Create and enter an isolated Rift-backed worktree. |
 | [rmslop](#rmslop) | Remove AI-generated code slop from a branch diff. |
 
@@ -197,6 +198,20 @@ npx skills add dbpolito/skills --skill get-pr-ready -g -a opencode
 Ask your agent to **“get this PR ready”** and provide a PR number or URL. If you don't provide one, the skill uses the current branch's PR. You'll need `gh` installed and authenticated for the relevant repository.
 
 Source: [`skills/get-pr-ready/SKILL.md`](skills/get-pr-ready/SKILL.md).
+
+## create-pr
+
+Create a PR from the current branch's committed changes. Follow the repository's PR template when present, focus on the final outcome, and use before/after evidence for visual changes or benchmarks when available. A writing-only request does not push or publish anything.
+
+### Install
+
+```sh
+npx skills add dbpolito/skills --skill create-pr
+```
+
+Ask your agent to **“create a PR”** and optionally provide the target base branch.
+
+Source: [`skills/create-pr/SKILL.md`](skills/create-pr/SKILL.md).
 
 ## rift
 
