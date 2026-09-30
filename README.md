@@ -177,9 +177,9 @@ Source: [`skills/review-pr/SKILL.md`](skills/review-pr/SKILL.md).
 
 ## get-pr-ready
 
-Keep working on an existing pull request until its required CI checks pass, required reviews are approved, and no actionable feedback remains.
+Keep working on an existing pull request until its branch includes the latest base, required CI checks pass, required reviews are approved, and no actionable feedback remains.
 
-The skill uses `gh` to inspect CI and review feedback, including inline threads. It verifies feedback, fixes CI failures and valid review issues, tests, commits, and pushes, then replies in the addressed inline threads with commit links and validation results. It rechecks the latest head, addresses available issues before waiting for checks, and reports blockers requiring human input or an external fix. It leaves thread resolution to reviewers unless requested, and never approves its own PR, dismisses reviews, or merges.
+The skill uses `gh` to inspect CI and review feedback, including inline threads. It fetches and merges the latest base when the PR branch is behind, even without conflicts. It verifies feedback, fixes CI failures and valid review issues, tests, commits, and pushes, then replies in the addressed inline threads with commit links and validation results. It rechecks the latest base/head, addresses available issues before waiting for checks, and reports blockers requiring human input or an external fix. It leaves thread resolution to reviewers unless requested, and never approves its own PR, dismisses reviews, or merges the PR.
 
 ### Install
 
