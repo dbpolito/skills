@@ -33,7 +33,7 @@ Finish this pass before reading reviews, review decisions, or discussion. Avoid 
 
 1. Read the PR description, relevant linked requirements and attachments, and repository guidance. Flag missing context only when it prevents a reliable assessment.
 2. Inspect the complete merge-base-to-head diff and account for every changed file, including deletions, renames, binaries, generated files, and lockfiles. Read surrounding implementations and previous contents of deletions. Explain skipped mechanical changes. Inspect intermediate commits only to answer a specific behavioral question.
-3. Trace supported entry points through changed logic, callers, dependencies, and consumers. Check invariants across identities, scopes, configurations, states, and execution contexts. Follow where state is established, inherited, persisted, and consumed later.
+3. Trace supported entry points through changed logic, callers, dependencies, and consumers. Check invariants across identities, scopes, configurations, states, and execution contexts. Include supported recovery paths and middleware/global gate hooks that can bypass local checks. Follow where state is established, inherited, persisted, invalidated, and consumed later.
 4. Check correctness, authorization, data integrity, compatibility, migrations, rollout, failure handling, retries, concurrency, caching, and material performance changes. Compare shared behavior across callers, subtypes, override/fallback levels, and records newly included or excluded. Verify behavior that must remain intact and whether tests exercise it.
 5. For each candidate, establish a supported entry point, concrete trigger, and meaningful consequence caused by the diff. Compare against the merge base and search for protections, documented intent, dependency behavior, and tests that disprove it.
 
@@ -42,9 +42,9 @@ Report every distinct, high-confidence material defect. Exclude unchanged pre-ex
 ### Investigation efficiency
 
 - Batch independent calls and reuse evidence. Read focused ranges from pinned contents and `git show`; fetch external implementations once at the installed dependency version.
-- Keep a coverage map of changed behavior, inspected paths, decisive evidence, and open questions. Expand beyond direct consumers only to answer a specific correctness question.
+- Keep a coverage map of supported scenarios, entry points, decisive code/test evidence, and gaps. File reads, test counts, or direct helper/policy assertions alone do not establish end-to-end behavior. Expand beyond direct consumers only to answer a specific correctness question.
 - Review cohesive changes directly. Delegate independent areas of large changes when useful and permitted. Give children separate ownership, pinned SHAs, relevant context, and the same read-only and independent-pass rules. Children return findings and gaps without publishing or further delegation. Verify their claims and cross-area interactions; missing results are coverage gaps.
-- Stop when every changed behavior is covered and each candidate is supported, disproved, or recorded as a gap. Reopen paths only for new, missing, or contradictory evidence.
+- Stop when every changed behavior is covered and each candidate is supported, disproved, or recorded as a gap. Finding a defect does not end investigation of its affected sibling paths. Reopen paths only for new, missing, or contradictory evidence.
 
 Summarize coverage, findings, rejected candidates, and gaps before proceeding. Keep these independent conclusions distinguishable from later history-derived findings.
 
@@ -56,6 +56,7 @@ Read prior reviews, inline comments, replies, discussion, and thread status. Pag
 - Identify earlier publications by `REVIEW_LOGIN` and `<!-- review-pr -->`. Resolve user logins with `gh api user`; use the supplied bot login for GitHub Apps. Match the explicit base/head marker below; GitHub's review `commit_id` can change.
 - Deduplicate by root cause. Link existing findings and retain verified unresolved defects in the assessment. Distinguish independent discoveries from findings learned through history.
 - Classify concerns as fixed, rejected, accepted/deferred, or unresolved. Thread resolution alone proves none of these. Verify technical claims and link explicit author decisions accepting a risk or narrowing scope.
+- For each fix, compare affected revisions and verify sibling paths and consumers, not just the commented line. Distinguish incomplete fixes and fix regressions from previously missed defects on unchanged code.
 - Reopen settled concerns only with new evidence or a distinct failure mode. Explain changed conclusions on unchanged code. Keep the assessment stable when findings are unchanged.
 
 Revisit only evidence needed to resolve disagreements.
@@ -72,7 +73,7 @@ Use **Review incomplete** when material coverage gaps remain. Otherwise grade co
 
 Start the review body with `<!-- review-pr -->`, the grade or incomplete state, and a one-sentence assessment. Include body-only findings, links to unresolved findings, and explicit accepted-risk decisions. Disclose accepted risks even on a five-star review.
 
-Add collapsed sections for **Coverage and reasoning** and **Revision details**. Summarize inspected behavior, counterevidence, gaps, and changed conclusions. Include full base/head SHAs and any supplied execution metadata or run URL, plus `<!-- review-pr-revision:BASE_SHA:HEAD_SHA -->` with the actual SHAs.
+Add collapsed sections for **Coverage and reasoning** and **Revision details**. Summarize supported scenarios with decisive code/test evidence, counterevidence, gaps, and changed conclusions. Include full base/head SHAs and any supplied execution metadata or run URL, plus `<!-- review-pr-revision:BASE_SHA:HEAD_SHA -->` with the actual SHAs.
 
 Include **Model** in **Revision details**, using the full `REVIEW_MODEL` reference, including any `#variant` suffix. If unavailable, use actual runtime metadata or report `unknown`; do not guess.
 

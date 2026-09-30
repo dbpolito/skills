@@ -8,9 +8,9 @@ description: Fix CI failures and address review feedback on an existing PR. Use 
 Use the given PR or the current branch's PR. Follow repository instructions and preserve local work.
 
 1. Confirm the repository and PR's head branch. Use `gh` to inspect failed checks, reviews, and inline review threads, including replies and outdated threads. Paginate every collection, including comments within threads.
-2. Verify feedback against the code. Fix CI failures and valid review issues, run relevant tests, commit only your changes, and push. Explain disagreements or ask for clarification.
+2. Verify feedback against the code and group related issues by root cause. Fix CI failures and valid review issues across affected sibling branches, consumers, recovery paths, and derived state, not just the commented line. Run relevant tests at the actual entry point or enforcement boundary, not only helpers or policies; check the final diff for regressions. Batch cohesive fixes, commit only your changes, and push. Explain disagreements or ask for clarification.
 3. After a successful push, reply in each inline thread addressed by the pushed changes, following the rules below. Also reply to verified fixes already present on the PR when no adequate response exists; do not leave older or outdated comments unanswered merely because a later review approves.
-4. Recheck the latest head, checks, and feedback after each push. Address available issues before waiting for required checks (`gh pr checks <number> --repo <owner/repo> --required --watch --fail-fast`).
+4. Recheck the latest head, checks, and feedback after each push. Address available issues before waiting for required checks (`gh pr checks <number> --repo <owner/repo> --required --watch --fail-fast`). Also wait for already-triggered review automation on that head, even when advisory, then fetch its published review and threads. A successful job alone is not a clean review; if an expected review is missing or incomplete, report the blocker rather than claiming readiness.
 5. Repeat until required checks pass, required reviews are approved, and no actionable feedback remains. Report any feedback replies that could not be delivered.
 
 ## Reply to review feedback
