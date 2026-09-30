@@ -7,9 +7,18 @@ description: Fix CI failures and address review feedback on an existing PR. Use 
 
 Use the given PR or the current branch's PR. Follow repository instructions and preserve local work.
 
-1. Confirm the PR's head branch. Use `gh` to inspect failed checks, reviews, and inline review threads.
+1. Confirm the repository and PR's head branch. Use `gh` to inspect failed checks, reviews, and inline review threads, including replies and outdated threads. Paginate every collection, including comments within threads.
 2. Verify feedback against the code. Fix CI failures and valid review issues, run relevant tests, commit only your changes, and push. Explain disagreements or ask for clarification.
-3. Recheck the latest head after each push. Address available issues before waiting for required checks (`gh pr checks <number> --required --watch --fail-fast`).
-4. Repeat until required checks pass, required reviews are approved, and no actionable feedback remains.
+3. After a successful push, reply in each inline thread addressed by the pushed changes, following the rules below. Also reply to verified fixes already present on the PR when no adequate response exists; do not leave older or outdated comments unanswered merely because a later review approves.
+4. Recheck the latest head, checks, and feedback after each push. Address available issues before waiting for required checks (`gh pr checks <number> --repo <owner/repo> --required --watch --fail-fast`).
+5. Repeat until required checks pass, required reviews are approved, and no actionable feedback remains. Report any feedback replies that could not be delivered.
+
+## Reply to review feedback
+
+- Reply in the original inline thread, not only in a top-level PR summary. For a fix, briefly state what changed, link the pushed commit, and report relevant validation accurately. Never claim a fix is pushed before the push succeeds or claim unrun tests passed.
+- For a disagreement, explain the code evidence in that thread; ask there when clarification is needed. Record accepted or deferred risks only with an explicit user decision, and link that decision. Unresolved thread status alone does not mean a defect remains, and outdated status or approval alone does not prove a fix.
+- Use the root review comment's numeric ID with `gh api --method POST repos/OWNER/REPO/pulls/NUMBER/comments/COMMENT_ID/replies`. Build the JSON body with `jq` and pass it through `--input -` to preserve Markdown safely. GraphQL thread IDs are not REST comment IDs.
+- Read existing replies before posting. Avoid duplicate responses for the same fix or decision. Confirm the API response; after an uncertain submission, refetch the thread before retrying. If replying fails, report it as a blocker rather than silently considering feedback handled.
+- Leave thread resolution to reviewers unless the user explicitly asks you to resolve addressed threads. Never resolve an unfixed concern to make the PR appear ready.
 
 If progress requires human input or an external fix, report the current state and blocker. Never self-approve, dismiss reviews, or merge.
