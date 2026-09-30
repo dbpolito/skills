@@ -74,6 +74,8 @@ Start the review body with `<!-- review-pr -->`, the grade or incomplete state, 
 
 Add collapsed sections for **Coverage and reasoning** and **Revision details**. Summarize inspected behavior, counterevidence, gaps, and changed conclusions. Include full base/head SHAs and any supplied execution metadata or run URL, plus `<!-- review-pr-revision:BASE_SHA:HEAD_SHA -->` with the actual SHAs.
 
+Include **Model** in **Revision details**, using the full `REVIEW_MODEL` reference, including any `#variant` suffix. If unavailable, use actual runtime metadata or report `unknown`; do not guess.
+
 ## 5. Publish
 
 1. Check the latest reviews. Skip publication only when this reviewer already posted the same base/head marker, substantive findings, grade, completeness, accepted-risk decisions, and review event. Earlier approval alone never justifies skipping a new finding. If reviewer identity or revision identity is unknown, do not assume a duplicate.
