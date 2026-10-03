@@ -237,7 +237,7 @@ Source: [`skills/rift/SKILL.md`](skills/rift/SKILL.md).
 
 ## rmslop
 
-Check the branch diff against `dev` and remove unnecessary comments, defensive checks, `any` casts, emoji, and other code that doesn't fit the surrounding style. Inspired by [OpenCode's `/rmslop` command](https://github.com/anomalyco/opencode/blob/dev/.opencode/command/rmslop.md).
+Check the head branch's diff against its base branch and remove unnecessary comments, defensive checks, `any` casts, emoji, and other code that doesn't fit the surrounding style. Inspired by [OpenCode's `/rmslop` command](https://github.com/anomalyco/opencode/blob/dev/.opencode/command/rmslop.md).
 
 ### Install
 
@@ -245,6 +245,6 @@ Check the branch diff against `dev` and remove unnecessary comments, defensive c
 npx skills add dbpolito/skills --skill rmslop
 ```
 
-Ask your agent to **“rmslop this branch”**. This skill expects a `dev` branch to compare against.
+Ask your agent to **“rmslop this branch”** and optionally specify a base branch. Otherwise, the skill uses the current PR's base branch or the repository's default branch, asking for clarification if the comparison is unclear.
 
 Source: [`skills/rmslop/SKILL.md`](skills/rmslop/SKILL.md).
