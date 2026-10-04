@@ -20,7 +20,7 @@ Skill directory and manifest names follow the skill manifest convention: lowerca
 
 Review an existing pull request independently, then reconcile previous feedback and publish one formal GitHub review. It traces changed behavior through callers, state, and dependencies, checks potential defects against counterevidence, and reports concrete failures with concise inline comments.
 
-It keeps a pinned checkout unchanged and reads test code without running tests. Reviews include a star grade, coverage summary, and revision details with the full model reference, including any variant (or `unknown` when unavailable). Material gaps produce **Review incomplete**, never an approval. Existing unresolved findings and explicitly deferred risks remain visible across reruns.
+It keeps tracked files and pinned revisions unchanged, reads test code, and may run targeted tests to verify suspected defects. Full suites or setup commands are avoided unless necessary and safe. Reviews include a star grade, coverage summary, and revision details with the full model reference, including any variant (or `unknown` when unavailable). Material gaps produce **Review incomplete**, never an approval. Existing unresolved findings and explicitly deferred risks remain visible across reruns.
 
 ### Install and run
 
