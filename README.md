@@ -13,7 +13,8 @@ Skill directory and manifest names follow the skill manifest convention: lowerca
 | [review-pr](#review-pr) | Investigate a PR and publish evidence-backed review findings. |
 | [get-pr-ready](#get-pr-ready) | Fix CI failures and work through review feedback. |
 | [create-pr](#create-pr) | Create a PR with a concise title and body from the final branch changes. |
-| [rift](#rift) | Create and enter an isolated Rift-backed worktree. |
+| [worktree](#worktree) | Create a worktree and move the current OpenCode session into it. |
+| [rift](#rift) | Archived; use [worktree](#worktree) instead. |
 | [rmslop](#rmslop) | Remove AI-generated code slop from a branch diff. |
 
 ## review-pr
@@ -213,27 +214,31 @@ Ask your agent to **“create a PR”** and optionally provide the target base b
 
 Source: [`skills/create-pr/SKILL.md`](skills/create-pr/SKILL.md).
 
-## rift
+## worktree
 
-Create an isolated Rift-backed worktree, move the current OpenCode session into it, and continue the original task there. The skill avoids duplicate worktrees and does not silently substitute a manual Git worktree when Rift was requested.
+Create a worktree, move the current OpenCode session into it, and continue the original task. OpenCode uses the project's configured worktree strategy, including Rift when configured.
 
 ### Install
 
 ```sh
-npx skills add dbpolito/skills --skill rift
+npx skills add dbpolito/skills --skill worktree
 ```
 
 To install it globally for OpenCode:
 
 ```sh
-npx skills add dbpolito/skills --skill rift -g -a opencode
+npx skills add dbpolito/skills --skill worktree -g -a opencode
 ```
 
 ### Use
 
-Ask your agent to **“use a Rift workspace”** or **“work in a new worktree.”** OpenCode needs the Rift tools and session-management tool available.
+Ask your agent to **“work in a new worktree.”** Requires OpenCode's built-in `opencode.worktree_create` and `opencode.session_move` tools.
 
-Source: [`skills/rift/SKILL.md`](skills/rift/SKILL.md).
+Source: [`skills/worktree/SKILL.md`](skills/worktree/SKILL.md).
+
+## rift
+
+Archived. Use the [worktree skill](#worktree) instead. The original Rift-specific instructions remain in [`skills/rift/SKILL.md`](skills/rift/SKILL.md).
 
 ## rmslop
 
