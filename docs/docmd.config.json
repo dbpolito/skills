@@ -1,0 +1,26 @@
+{
+  "title": "Skills",
+  "src": ".",
+  "out": "./.docmd-site",
+  "plugins": {
+    "ai": false,
+    "search": true,
+    "mermaid": true
+  },
+  "navigation": [
+    { "title": "Overview", "path": "/" },
+    {
+      "title": "Skills",
+      "collapsible": false,
+      "children": [
+        { "title": "Review PR", "path": "/skills/review-pr" },
+        { "title": "Get PR ready", "path": "/skills/get-pr-ready" },
+        { "title": "Create PR", "path": "/skills/create-pr" },
+        { "title": "Worktree", "path": "/skills/worktree" },
+        { "title": "Rift", "path": "/skills/rift" },
+        { "title": "Remove slop", "path": "/skills/rmslop" },
+        { "title": "Documentation-driven development", "path": "/skills/doc-driven" }
+      ]
+    }
+  ]
+}

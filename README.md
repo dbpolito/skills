@@ -8,6 +8,8 @@ npx skills add dbpolito/skills
 
 Skill directory and manifest names follow the skill manifest convention: lowercase letters, numbers, and hyphens (for example, `get-pr-ready`), with the directory matching the manifest's `name`.
 
+Product documentation starts at [Overview](docs/index.md). Browse it locally with `(cd docs && npx @docmd/core dev)` from the repository root.
+
 | Skill | Purpose |
 | --- | --- |
 | [review-pr](#review-pr) | Investigate a PR and publish evidence-backed review findings. |
@@ -16,6 +18,24 @@ Skill directory and manifest names follow the skill manifest convention: lowerca
 | [worktree](#worktree) | Create a worktree and move the current OpenCode session into it. |
 | [rift](#rift) | Archived; use [worktree](#worktree) instead. |
 | [rmslop](#rmslop) | Remove AI-generated code slop from a branch diff. |
+| [doc-driven](#doc-driven) | Specify product behavior in linked docs, then implement approved changes. |
+
+## doc-driven
+
+Maintain concise page, feature, and shared-rule docs with a review boundary between specification and implementation. It can establish a baseline from an existing product, separating observed behavior from intended requirements and uncertainty.
+
+```sh
+npx skills add dbpolito/skills --skill doc-driven
+```
+
+On a project without product docs, invoke `@doc-driven`. It inspects the project, chooses a fitting structure, creates an initial documentation baseline with a docmd viewer, and stops for review. No bootstrap prompt is needed.
+
+- **Specify:** ask “use doc-driven specify to describe …”. The agent reads related docs and consumers, edits only documentation, and stops for review.
+- **Implement:** after approval, ask “use doc-driven implement for the approved …”. The agent updates implementation and tests, reports discrepancies, and reconciles verified behavior without silently changing requirements.
+
+Edit product docs directly to describe the desired behavior, then review the documentation diff before implementation. Shared rules have one owner with links from consumers; known implementation gaps remain visible. No separate specs, proposal sections, or status labels are needed. Initialization creates `docs/docmd.config.json` with visible navigation, Search/Mermaid enabled, and the AI Assistant disabled. Viewer output, runtime dependencies, and their ignore rules stay inside `docs/`. Browse with `(cd docs && npx @docmd/core dev)` from the repository root.
+
+Source: [`skills/doc-driven/SKILL.md`](skills/doc-driven/SKILL.md).
 
 ## review-pr
 
