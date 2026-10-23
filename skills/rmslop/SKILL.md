@@ -1,13 +1,9 @@
 ---
 name: rmslop
 description: Remove AI code slop
-metadata:
-  opencode/autoinvoke: false
 ---
 
-Check the head branch's diff against its base branch, and remove AI-generated slop introduced in the head branch.
-
-Use the base branch specified by the user, otherwise the current PR's base branch when available, otherwise the repository's default branch. If the base is unclear or is the same as the head, ask the user which branch to compare against. Review changes since the merge base (`git diff <base>...HEAD`) so unrelated changes on the base branch are excluded. Keep cleanup scoped to changes introduced in the head branch.
+Remove AI-generated slop from the requested changes. Default to uncommitted changes when present, otherwise the branch's changes against its base. Keep cleanup scoped and preserve unrelated work.
 
 This includes:
 
