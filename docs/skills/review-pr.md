@@ -6,7 +6,9 @@ Provide a repository and PR, or supply them through the CI environment. Requires
 
 Pin full base/head SHAs and confirm checkout HEAD matches the PR head. Conflicting targets, missing history, mismatched checkouts, closed/draft PRs, or changed revisions stop the review. A synthetic merge checkout must be corrected by the caller, not by the reviewer.
 
-Investigate independently before reading prior reviews or discussion. Account for every changed file in the merge-base-to-head diff, trace supported entry points and consumers, and look for evidence disproving each potential finding. Report only concrete material defects introduced or worsened by the PR, not unchanged issues, style preferences, speculative scenarios, or generic requests for tests.
+On a first or explicitly fresh review, investigate the full merge-base-to-head diff independently before reading prior findings or discussion. On a follow-up, reuse a matching prior review with the same base and merge base, an ancestral reviewed head, and documented coverage. Review the delta, affected consumers, prior active findings, and gaps that can now be assessed. Fall back to the full diff when no usable baseline exists.
+
+Trace supported entry points and look for evidence disproving each candidate. Before publishing, use each verified defect to check sibling inputs, callers, or modes that rely on the same assumption. Report verified siblings in the same review, grouped by root cause. Report only concrete material defects introduced or worsened by the PR. On follow-ups, distinguish defects introduced by the latest revision from previously missed defects.
 
 Then reconcile previous reviews and all paginated discussion. Deduplicate root causes, verify fixes across affected paths, retain unresolved findings, and disclose accepted/deferred risks with explicit author decisions. Thread status or prior approval alone proves neither a fix nor correctness.
 
@@ -20,7 +22,9 @@ Publish one formal review, or a failure comment when publication fails. Do not m
 
 New findings have severity, trigger, impact, and a practical fix, anchored to a small valid diff range where possible. Critical covers security exposure, data loss, broken deployment, or severe customer impact; high covers normal-use regressions or broken supported contracts; medium covers meaningful edge-case defects.
 
-Material coverage gaps produce **Review incomplete**, never approval. Otherwise grade active new/unresolved findings:
+A gap produces **Review incomplete** and blocks approval only if it prevents assessing a material behavior or explicit acceptance criterion. Name the blocked assessment. If code coverage is complete but a separate criterion is blocked (for example, required visual parity), report the code grade separately. Advisory limits alone do not make the review incomplete.
+
+Grade completed code coverage from active new/unresolved findings:
 
 | Active findings | Grade |
 | --- | --- |
@@ -32,7 +36,7 @@ Material coverage gaps produce **Review incomplete**, never approval. Otherwise 
 
 Accepted/deferred risks remain disclosed without lowering the grade. Five stars is a code-review assessment, not proof of tests or CI success.
 
-The body includes coverage/reasoning, full pinned revisions, revision markers, execution metadata when supplied, and the full model reference including variant, or `unknown`. Publish `APPROVE` only for complete five-star reviews; otherwise `COMMENT`. Explicit self-approval rejection permits retrying as `COMMENT`.
+The body includes coverage/reasoning, the baseline link on follow-ups, full pinned revisions, revision markers, execution metadata when supplied, and the full model reference including variant, or `unknown`. Publish `APPROVE` only for complete five-star reviews; otherwise `COMMENT`. Explicit self-approval rejection permits retrying as `COMMENT`.
 
 Check freshness immediately before posting and after publication. Skip only an equivalent publication by the same reviewer for the same revisions. Confirm responses and refetch history after uncertain submissions; never retry blindly. If publication fails, post a deduplicated **Review automation failure** comment only when the PR is still current, open, and non-draft. Return the grade/completeness, finding counts, and review URL or reason nothing was published.
 

@@ -8,6 +8,7 @@ Ask “create a PR” and optionally provide the base branch. A request for titl
 - Describe the net base-to-HEAD changes using commits, the relevant diff, and any repository PR template. Keep the title specific and short and the body focused on purpose and reviewer-relevant changes.
 - Include before/after media or benchmark comparisons when available; never invent evidence. Link a supplied or clearly identifiable ticket without creating one.
 - Check for an existing PR before creating one. Publish against the resolved base, apply requested labels, and return the title and URL.
+- After publishing media, read back the PR body to verify uploads and catch leftover local paths. Verify access from the intended reviewer context when available; report missing uploads or unverified access.
 
 Risks, migrations, and unusual validation belong in the body when relevant; routine checklists and unverified claims do not.
 

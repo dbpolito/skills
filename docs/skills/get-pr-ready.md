@@ -12,11 +12,11 @@ Verify feedback against the code. Fix CI failures and valid issues across affect
 
 After successful pushes, reply in each addressed inline thread with the change, pushed commit link, and accurate validation results. Also explain already-present fixes lacking adequate replies. Read existing replies, avoid duplicates, and refetch after uncertain submissions. Delivery failures remain blockers.
 
-Recheck the latest base/head, checks, and feedback. Address available issues before waiting for required checks and already-triggered review automation, including advisory automation. A successful automation job does not establish that it published a complete review.
+Recheck the latest base/head, checks, and feedback. Address available issues before waiting for required checks and already-triggered review automation, including advisory automation. Confirm a review was published for the exact revision; use its base/head marker when available rather than the movable GitHub review commit ID. Verify older findings against current code before acting on them.
 
 ## Ready state and limits
 
-The PR is ready only when its head includes the freshly fetched base tip, required checks pass, required reviews are approved, and no actionable feedback remains. Report human or external blockers rather than claiming readiness.
+The PR is ready only when its head includes the freshly fetched base tip, required checks pass, required reviews are approved, and no actionable feedback or required acceptance gap remains. Report human or external blockers rather than pushing or triggering a review just to get a different verdict. Disclose advisory gaps separately.
 
 Disagreements need evidence in the original thread. Accepted or deferred risks require an explicit user decision. Leave resolution to reviewers unless requested; never resolve an unfixed concern, self-approve, dismiss reviews, or merge the PR.
 

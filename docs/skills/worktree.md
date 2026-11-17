@@ -1,6 +1,6 @@
 # Worktree
 
-Ask to work in a new worktree or isolated checkout. Requires OpenCode's `opencode.worktree_create` and `opencode.session_move` tools.
+Ask to work in a new worktree or isolated checkout. For explicit requests to use Rift, see [Rift](rift.md). Requires OpenCode's `opencode.worktree_create` and `opencode.session_move` tools.
 
 ## Behavior
 
@@ -10,10 +10,8 @@ Names follow the DNS-safe length and character rules in [`skills/worktree/SKILL.
 
 Report a blocker if the tools are unavailable. The README notes that the configured strategy can use Rift; the skill itself does not select a specific backend.
 
+If creation succeeds but the session move fails, report the existing path and blocker. Retry only the move to that path.
+
 ## Evidence
 
 Static observations: `skills/worktree/SKILL.md` and `README.md`. No worktree or session movement was executed.
-
-## Open questions
-
-- The manifest does not specify recovery when creation succeeds but session movement fails. Retrying the entire request could create another worktree; recovery behavior needs clarification before being treated as a requirement.

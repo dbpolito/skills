@@ -4,14 +4,10 @@ The README marks this skill archived and recommends [worktree](worktree.md). Its
 
 ## Behavior
 
-When a Rift workspace is requested, create one worktree with `rift.create`, using a short task-based name when apparent. After successful creation, move the session to the returned directory with `opencode.session_move` in a separate call and continue the original task.
+When Rift is explicitly requested, create one worktree with `rift.create`, using a short task-based name when apparent. After successful creation, move the session to the returned directory with `opencode.session_move` in a separate call and continue the original task.
 
-Do not create another worktree after moving. Do not substitute a manual Git worktree when Rift was requested. Report a blocker if Rift tools are unavailable.
+If the session move fails, report the existing workspace path and blocker. Retry only the move to that path. If Rift tools are unavailable, report a blocker rather than substituting a manual Git worktree.
 
 ## Evidence
 
 Static observations: `skills/rift/SKILL.md` and `README.md`. No Rift workspace was created.
-
-## Open questions
-
-- Does “archived” mean only that installation is discouraged, or should invocation be disabled? The manifest still has an active trigger description; this baseline preserves both observations without changing it.

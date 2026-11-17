@@ -1,6 +1,6 @@
 ---
 name: worktree
-description: Use when asked to work in a new worktree or isolated checkout.
+description: Create a worktree using the project's configured strategy for a generic worktree or isolated checkout request. For explicit Rift requests, use the Rift skill.
 ---
 
 # Worktree
@@ -9,4 +9,4 @@ description: Use when asked to work in a new worktree or isolated checkout.
 2. After creation succeeds, call `opencode.session_move` with the returned directory in a separate tool call.
 3. Continue the original task from the moved session.
 
-If the tools are unavailable, report the blocker.
+If creation succeeds but the move fails, report the existing worktree path and blocker. Retry only the move to that path, not creation. If the tools are unavailable, report the blocker.

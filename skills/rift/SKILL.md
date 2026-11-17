@@ -1,6 +1,6 @@
 ---
 name: rift
-description: Create and switch to an isolated Rift-backed worktree. Use when asked to work in a new worktree, Rift workspace, or isolated checkout.
+description: Create and switch to a Rift workspace when the user explicitly requests Rift.
 ---
 
 # Rift
@@ -9,4 +9,4 @@ description: Create and switch to an isolated Rift-backed worktree. Use when ask
 2. After creation succeeds, call `opencode.session_move` with the returned directory in a separate tool call.
 3. Continue the original task from the moved session.
 
-Do not create another worktree after moving the session. Do not substitute a manual Git worktree when Rift was requested; report the blocker if the Rift tools are unavailable.
+If creation succeeds but the move fails, report the existing workspace path and blocker. Retry only the move to that path, not creation. Report unavailable Rift tools as a blocker rather than substituting a manual Git worktree.

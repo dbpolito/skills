@@ -6,7 +6,7 @@ Ask “rmslop” to clean up uncommitted changes, or “rmslop this branch” fo
 
 Use the requested scope. Default to uncommitted changes when present, otherwise branch changes against the base. Preserve unrelated work.
 
-Cleanup includes unnecessary or inconsistent comments, defensive checks and try/catch blocks abnormal for the surrounding code, `any` casts bypassing type issues, unnecessary emoji, and other inconsistent style. Surrounding conventions determine whether code is out of place.
+Cleanup preserves behavior. It includes unnecessary comments, redundant defensive checks and try/catch blocks, `any` casts bypassing type issues, unnecessary emoji, and inconsistent style. Trace callers and failure paths before removing guards or handlers; keep those that enforce a boundary or support recovery, or whose redundancy cannot be established. Check the final diff for behavior changes.
 
 Finish with only a one-to-three-sentence summary of changes.
 
