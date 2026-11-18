@@ -29,6 +29,8 @@ Fetch only PR metadata initially: title, body, author, URL, state, draft status,
 
 ## 2. Choose the review scope
 
+Before opening either diff, select and log `follow-up: <reviewed head>` or `full: <reason>`. Check for a baseline first unless the request explicitly asks for a fresh review. With a usable baseline, start with the follow-up scope; expand only for a specific coverage need found during investigation.
+
 - **First review or explicit fresh review:** Inspect the complete merge-base-to-head diff. Finish the investigation before reading prior findings, decisions, or discussion. Avoid loaders that bundle history; disclose unavoidable exposure.
 - **Follow-up:** Look for the latest usable formal review of this PR matching the reviewer identity and marker in step 4. Use its revision marker, not GitHub's `commit_id`, to identify the old base and head. A baseline is usable if the pinned base and merge base are unchanged, the reviewed head is available and is an ancestor of (or equal to) the pinned head, and the review identifies its coverage and gaps. A documented, bounded gap does not invalidate otherwise usable coverage.
 - **With a usable baseline:** Inspect the old-head-to-head diff and recheck affected behavior, its consumers, prior active findings, and any gaps that can now be assessed. Carry forward unchanged coverage, remaining gaps, and explicit scope decisions unless the delta or new evidence invalidates them. Expand to the relevant unreviewed paths when requirements, shared code, dependencies, or new evidence change what the baseline establishes. For a same-head rerun, verify known findings and address new evidence or gaps rather than restarting by default.
@@ -49,7 +51,7 @@ Report every distinct, high-confidence material defect. Exclude unchanged pre-ex
 - Batch independent calls and reuse evidence. Read focused ranges from pinned contents and `git show`; fetch external implementations once at the installed dependency version.
 - Track the reviewed behaviors, decisive evidence, and gaps. File reads, test counts, or direct helper assertions alone do not establish end-to-end behavior. Expand beyond direct consumers only to answer a specific correctness question.
 - Review cohesive changes directly. Delegate independent areas of large changes when useful and permitted. Give children separate ownership, pinned SHAs, the selected scope, and the same read-only rules. Children return findings and gaps without publishing or further delegation. Verify their claims and cross-area interactions.
-- Before finishing, use each verified defect to check for missed siblings: identify the failed assumption, then check other supported inputs, callers, or modes in scope that rely on it. For example, if one builder field reaches the renderer without validation, check the other fields consumed by that renderer. Include verified sibling defects in the same review and group those with the same root cause.
+- Before finishing, use each verified defect to check for missed siblings: identify the failed assumption and check other supported inputs, callers, or modes that rely on it. When changed state is involved, follow it from the update through each affected consumer, including consumers outside the changed files. For example, when a list refresh inserts carousel cards, check the cards rendered, impression tracking, arrow state, and focus after the update. Include verified sibling defects in the same review and group those with the same root cause.
 - Finish when every behavior in scope is assessed and each candidate is supported, disproved, or recorded as a specific gap. A focused sibling check does not reopen unrelated areas.
 
 ## 4. Reconcile previous reviews
@@ -79,7 +81,7 @@ Use **Review incomplete** only when missing evidence prevents assessment of a ma
 
 Start the review body with `<!-- review-pr -->`, the grade or incomplete state, and a concise assessment. Include body-only findings, links to unresolved findings, and explicit accepted-risk decisions even on a five-star review.
 
-Add collapsed sections for **Coverage and reasoning** and **Revision details**. State whether this was a full or follow-up review. For follow-ups, link the baseline review and note what was reused, rechecked, or left unverified. Summarize decisive evidence, counterevidence, and changed conclusions rather than restating unchanged coverage. Include full base/head SHAs and any supplied execution metadata or run URL, plus `<!-- review-pr-revision:BASE_SHA:HEAD_SHA -->` with the actual SHAs.
+Add collapsed sections for **Coverage and reasoning** and **Revision details**. For a full review, state why the full pass was selected. For a follow-up, link the baseline review and note what was reused, rechecked, or left unverified. Summarize decisive evidence, counterevidence, and changed conclusions rather than restating unchanged coverage. Include full base/head SHAs and any supplied execution metadata or run URL, plus `<!-- review-pr-revision:BASE_SHA:HEAD_SHA -->` with the actual SHAs.
 
 Include **Model** in **Revision details**, using the full `REVIEW_MODEL` reference, including any `#variant` suffix. If unavailable, use actual runtime metadata or report `unknown`; do not guess.
 
