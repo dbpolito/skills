@@ -33,26 +33,26 @@ Before opening either diff, select and log `follow-up: <reviewed head>` or `full
 
 - **First review or explicit fresh review:** Inspect the complete merge-base-to-head diff. Finish the investigation before reading prior findings, decisions, or discussion. Avoid loaders that bundle history; disclose unavoidable exposure.
 - **Follow-up:** Look for the latest usable formal review of this PR matching the reviewer identity and marker in step 4. Use its revision marker, not GitHub's `commit_id`, to identify the old base and head. A baseline is usable if the pinned base and merge base are unchanged, the reviewed head is available and is an ancestor of (or equal to) the pinned head, and the review identifies its coverage and gaps. A documented, bounded gap does not invalidate otherwise usable coverage.
-- **With a usable baseline:** Inspect the old-head-to-head diff and recheck affected behavior, its consumers, prior active findings, and any gaps that can now be assessed. Carry forward unchanged coverage, remaining gaps, and explicit scope decisions unless the delta or new evidence invalidates them. Expand to the relevant unreviewed paths when requirements, shared code, dependencies, or new evidence change what the baseline establishes. For a same-head rerun, verify known findings and address new evidence or gaps rather than restarting by default.
+- **With a usable baseline:** Inspect the old-head-to-head diff. Recheck prior active findings and behavior affected by the delta; carry forward unchanged coverage, gaps, and explicit scope decisions. Reopen a gap or go beyond the delta only to answer a specific question about a PR requirement or existing supported behavior that the delta or new evidence puts in doubt. On a same-head rerun, limit new investigation to new evidence.
 - **Without a usable baseline:** Do the full review. Record why you could not reuse prior coverage (for example, changed base, rewritten history, or unclear coverage). History unavailable for selecting a baseline does not by itself mean code coverage is incomplete.
 
 ## 3. Investigate
 
 1. Read the PR description, relevant linked requirements, and repository guidance. Check attachments needed to assess the requirements. Reuse a known attachment gap on a follow-up unless the reference, access, or affected scope has changed.
 2. Account for every file in the selected diff, including deletions, renames, binaries, generated files, and lockfiles. Read surrounding implementations and previous contents of deletions where relevant. Explain skipped mechanical changes. Inspect intermediate commits only to answer a specific behavioral question.
-3. Trace supported entry points through changed logic, callers, dependencies, and consumers. Check invariants across identities, scopes, configurations, states, and execution contexts. Include supported recovery paths and middleware/global gate hooks that can bypass local checks. Follow where state is established, inherited, persisted, invalidated, and consumed later.
-4. Check the risks relevant to the changed behavior. Compare shared behavior across callers, subtypes, override/fallback levels, and records newly included or excluded. Verify behavior that must remain intact and whether tests exercise it.
+3. Trace changed behavior from supported entry points to its observable effects. Include callers, shared state, and downstream consumers where the change can alter an existing contract. Stop tracing a branch once the evidence accounts for whether that contract still holds.
+4. Read tests for the changed behavior and the existing guarantees it can break. Target the failure paths suggested by the change rather than surveying adjacent features.
 5. For each candidate, establish a supported entry point, concrete trigger, and meaningful consequence. Compare against the merge base to prove the PR introduced or worsened it. On follow-ups, compare against the reviewed head too: label newly reported defects **introduced by this revision** or **previously missed**. Search for protections, documented intent, dependency behavior, and tests that disprove the claim.
 
-Report every distinct, high-confidence material defect. Exclude unchanged pre-existing issues, unsupported scenarios, style preferences, speculative breakage, and generic test requests. Convention violations need a concrete consequence.
+Ask for a fix in this PR only for a verified, material violation of a PR requirement or an existing supported contract that the PR introduced or worsened. A rare trigger can still qualify if the consequence is material. An improvement beyond that contract belongs in a follow-up, if worth mentioning; it is not an active finding. Exclude unsupported scenarios, style preferences, speculative breakage, and generic test requests. Convention violations need a concrete consequence.
 
 ### Investigation efficiency
 
 - Batch independent calls and reuse evidence. Read focused ranges from pinned contents and `git show`; fetch external implementations once at the installed dependency version.
-- Track the reviewed behaviors, decisive evidence, and gaps. File reads, test counts, or direct helper assertions alone do not establish end-to-end behavior. Expand beyond direct consumers only to answer a specific correctness question.
+- Track the reviewed behaviors, decisive evidence, and gaps. File reads, test counts, or direct helper assertions alone do not establish end-to-end behavior.
 - Review cohesive changes directly. Delegate independent areas of large changes when useful and permitted. Give children separate ownership, pinned SHAs, the selected scope, and the same read-only rules. Children return findings and gaps without publishing or further delegation. Verify their claims and cross-area interactions.
-- Before finishing, use each verified defect to check for missed siblings: identify the failed assumption and check other supported inputs, callers, or modes that rely on it. When changed state is involved, follow it from the update through each affected consumer, including consumers outside the changed files. For example, when a list refresh inserts carousel cards, check the cards rendered, impression tracking, arrow state, and focus after the update. Include verified sibling defects in the same review and group those with the same root cause.
-- Finish when every behavior in scope is assessed and each candidate is supported, disproved, or recorded as a specific gap. A focused sibling check does not reopen unrelated areas.
+- Before finishing, check sibling paths that rely on the same failed assumption and can break the same existing contract. Group verified cases with the same root cause in one finding.
+- Finish when every behavior in scope is assessed and each candidate is supported, disproved, or recorded as a specific gap.
 
 ## 4. Reconcile previous reviews
 
@@ -62,7 +62,7 @@ On a first pass, record the independent findings and gaps before reading history
 - Identify earlier publications by `REVIEW_LOGIN` and `<!-- review-pr -->`. Resolve user logins with `gh api user`; use the supplied bot login for GitHub Apps. Match the explicit base/head marker below; GitHub's review `commit_id` can change.
 - Deduplicate by root cause. Link existing findings and retain verified unresolved defects in the assessment. Distinguish independent discoveries from findings learned through history.
 - Classify concerns as fixed, rejected, accepted/deferred, or unresolved. Thread resolution alone proves none of these. Verify technical claims and link explicit author decisions accepting a risk or narrowing scope.
-- For each fix, compare affected revisions and verify sibling paths and consumers, not just the commented line. Distinguish incomplete fixes and fix regressions from previously missed defects on unchanged code.
+- For each fix, compare affected revisions and verify the reported behavior and any siblings affected by the same failed assumption. Distinguish incomplete fixes and fix regressions from previously missed defects on unchanged code.
 - Reopen settled concerns only with new evidence or a distinct failure mode. Explain changed conclusions on unchanged code. Keep the assessment stable when findings are unchanged.
 
 Revisit only evidence needed to resolve disagreements.
@@ -73,7 +73,7 @@ Revisit only evidence needed to resolve disagreements.
 - High: a regression in normal usage or a broken supported contract.
 - Medium: an edge-case defect with meaningful impact.
 
-Write one concise comment per new root cause, with a severity-prefixed title, trigger, impact, and smallest practical fix. Anchor it to the smallest relevant diff range; put other findings and links to unresolved or accepted risks in the body.
+Write one concise comment per new root cause, with a severity-prefixed title, trigger, impact, and the behavior that needs to hold. Suggest a local fix only when clear; leave implementation choices open if the fix would widen the PR. Anchor it to the smallest relevant diff range; put other findings and links to unresolved or accepted risks in the body. Label any suggested follow-up as advisory and keep it out of inline findings and grading.
 
 Grade completed code coverage from active (`new` or `unresolved`) findings: **★★★★★** for none, **★★★★☆** for medium only, **★★★☆☆** for one high, **★★☆☆☆** for multiple high, **★☆☆☆☆** for any critical. Accepted/deferred risks do not lower the grade.
 

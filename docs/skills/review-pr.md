@@ -6,9 +6,9 @@ Provide a repository and PR, or supply them through the CI environment. Requires
 
 Pin full base/head SHAs and confirm checkout HEAD matches the PR head. Conflicting targets, missing history, mismatched checkouts, closed/draft PRs, or changed revisions stop the review. A synthetic merge checkout must be corrected by the caller, not by the reviewer.
 
-Select and log the scope before opening either diff. On a first or explicitly fresh review, investigate the full merge-base-to-head diff independently before reading prior findings or discussion. On a follow-up, reuse a matching prior review with the same base and merge base, an ancestral reviewed head, and documented coverage. Review the delta, affected consumers, prior active findings, and gaps that can now be assessed. State the reason for a full pass in the review.
+Select and log the scope before opening either diff. On a first or explicitly fresh review, investigate the full merge-base-to-head diff independently before reading prior findings or discussion. On a follow-up, reuse a matching prior review with the same base and merge base, an ancestral reviewed head, and documented coverage. Review the delta and prior active findings. Expand only when the delta or new evidence puts a specific requirement or existing supported behavior in doubt. State the reason for a full pass in the review.
 
-Trace supported entry points and look for evidence disproving each candidate. Before publishing, use each verified defect to check sibling inputs, callers, or modes that rely on the same assumption. Follow changed state through affected consumers, including those outside the diff. Report verified siblings in the same review, grouped by root cause. Report only concrete material defects introduced or worsened by the PR. On follow-ups, distinguish defects introduced by the latest revision from previously missed defects.
+Trace changed behavior to its observable effects and look for evidence disproving each candidate. Check sibling paths that share the failed assumption and can break the same contract; group them by root cause. Ask for changes only for material PR regressions or violated PR requirements. On follow-ups, distinguish defects introduced by the latest revision from previously missed defects.
 
 Then reconcile previous reviews and all paginated discussion. Deduplicate root causes, verify fixes across affected paths, retain unresolved findings, and disclose accepted/deferred risks with explicit author decisions. Thread status or prior approval alone proves neither a fix nor correctness.
 
@@ -20,7 +20,7 @@ Publish one formal review, or a failure comment when publication fails. Do not m
 
 ## Findings and outcome
 
-New findings have severity, trigger, impact, and a practical fix, anchored to a small valid diff range where possible. Critical covers security exposure, data loss, broken deployment, or severe customer impact; high covers normal-use regressions or broken supported contracts; medium covers meaningful edge-case defects.
+New findings have severity, trigger, impact, and the behavior that needs to hold, anchored to a small valid diff range where possible. Suggest a local fix when clear; leave larger implementation choices open. Improvements beyond the existing contract are advisory follow-ups, not inline findings or grading inputs. Critical covers security exposure, data loss, broken deployment, or severe customer impact; high covers normal-use regressions or broken supported contracts; medium covers meaningful edge-case defects.
 
 A gap produces **Review incomplete** and blocks approval only if it prevents assessing a material behavior or explicit acceptance criterion. Name the blocked assessment. If code coverage is complete but a separate criterion is blocked (for example, required visual parity), report the code grade separately. Advisory limits alone do not make the review incomplete.
 
