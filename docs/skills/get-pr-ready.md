@@ -8,11 +8,11 @@ Confirm the repository and head branch, preserve local work, and inspect failed 
 
 Fetch the latest base from the base repository. Merge it when its tip is not an ancestor of the PR head, even without reported conflicts. Respect repository history policy and do not rewrite published history without authorization.
 
-Verify feedback against the code. Fix CI failures and valid issues across affected consumers and related paths; run relevant tests at actual entry points or enforcement boundaries. Commit only the skill's changes and push cohesive fixes.
+Verify feedback against current code. Fix CI blockers, violated PR requirements, and material regressions introduced or worsened by the PR. Include sibling paths only when they share the root cause and break the same requirement or existing contract. Keep advisory feedback out of the fix loop. Get user approval before widening scope for a redesign, new contract, or product tradeoff. Test at the affected entry points or enforcement boundaries, then commit and push cohesive fixes.
 
 After successful pushes, reply in each addressed inline thread with the change, pushed commit link, and accurate validation results. Also explain already-present fixes lacking adequate replies. Read existing replies, avoid duplicates, and refetch after uncertain submissions. Delivery failures remain blockers.
 
-Recheck the latest base/head, checks, and feedback. Address available issues before waiting for required checks and already-triggered review automation, including advisory automation. Confirm a review was published for the exact revision; use its base/head marker when available rather than the movable GitHub review commit ID. Verify older findings against current code before acting on them.
+Recheck the latest base/head, checks, and feedback. Address actionable issues before waiting for required checks and already-triggered review automation, including advisory automation. Confirm a review was published for the exact revision; use its base/head marker when available rather than the movable GitHub review commit ID. Recheck new findings and unresolved blockers; carry forward settled decisions and unchanged coverage unless the diff or new evidence invalidates them.
 
 ## Ready state and limits
 
